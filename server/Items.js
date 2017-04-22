@@ -1,5 +1,4 @@
-
-var items =  {
+const items =  {
   "1001": "Boots of Speed",
   "1004": "Faerie Charm",
   "1006": "Rejuvenation Bead",
@@ -176,21 +175,528 @@ var items =  {
   "3903": "Raise Morale"
 };
 
-const randomSupportItem = [3107, 3109, 3190, 3001];
-const lastWhisper = [3033, 3036];
-const magicResAd = [3156, 3139];
-const healthAd = [3053, 3022];
+const types = {
+  'none': 'none',
+  'ap': 'ap',
+  'ad': 'ad',
+  'heals': 'heals',
+  'ranged': 'ranged',
+  'melee': 'melee',
+  'aa': 'aa',
+  'tank': 'tank',
+  'mana': 'mana',
+  'poke': 'poke',
+  'tear': 'tear',
+  'as': 'as',
+  'dive': 'dive',
+  'dps': 'dps',
+  'crit': 'crit',
+  'support': 'support',
+  'lethality': 'lethality',
+  'dot': 'dot',
+  'cc': 'cc'
+};
+
+const boots = {
+  "3006": {
+    "name": "Berserker's Greaves",
+    "value": 1,
+    "users": [
+      [types.as]
+    ],
+    "versus": []
+  },
+  "3020": {
+    "name": "Sorcerer's Shoes",
+    "value": 1,
+    "users": [
+      [types.ap]
+    ],
+    "versus": []
+  },
+  "3047": {
+    "name": "Ninja Tabi",
+    "value": 1,
+    "users": [],
+    "versus": [
+      types.ad, types.aa, types.as
+    ]
+  },
+  "3111": {
+    "name": "Mercury's Treads",
+    "value": 1,
+    "users": [],
+    "versus": [
+      types.ap, types.cc
+    ]
+  },
+  "3158": {
+    "name": "Ionian Boots of Lucidity",
+    "value": 1,
+    "users": [
+      [types.support]
+    ],
+    "versus": []
+  },
+
+}
+
+const final =  {
+  "3001": {
+    "name": "Abyssal Scepter",
+    "value": 0.8,
+    "users": [
+      [types.ap],
+      [types.ap, types.tank]
+    ],
+    "versus": [types.ap]
+  },
+  "3022": {
+    "name": "Frozen Mallet",
+    "value": 0.3,
+    "users": [
+      [types.ad],
+      [types.ad, types.tank]
+    ],
+    "versus": [types.dps]
+  },
+  "3025": {
+    "name": "Iceborn Gauntlet",
+    "value": 0.5,
+    "users": [
+      [types.tank, types.mana]
+    ],
+    "versus": [types.ad]
+  },
+  "3027": {
+    "name": "Rod of Ages",
+    "value": 0.5,
+    "users": [
+      [types.ap, types.tank, types.dive]
+    ],
+    "versus": [types.dps]
+  },
+  "3031": {
+    "name": "Infinity Edge",
+    "value": 0.5,
+    "users": [
+      [types.crit, types.dps]
+    ],
+    "versus": []
+  },
+  "3033": {
+    "name": "Mortal Reminder",
+    "value": 0.3,
+    "users": [
+      [types.ad, types.ranged, types.dps]
+    ],
+    "versus": [types.tank, types.heal]
+  },
+  "3036": {
+    "name": "Lord Dominik's Regards",
+    "value": 0.3,
+    "users": [
+      [types.ad, types.ranged, types.dps]
+    ],
+    "versus": [types.tank]
+  },
+  "3046": {
+    "name": "Phantom Dancer",
+    "value": 0.2,
+    "users": [
+      [types.ad, types.ranged, types.crit, types.dps]
+    ],
+    "versus": []
+  },
+  "3050": {
+    "name": "Zeke's Harbinger",
+    "value": 0.1,
+    "users": [
+      [types.none]
+    ],
+    "versus": []
+  },
+  "3053": {
+    "name": "Sterak's Gage",
+    "value": 0.3,
+    "users": [
+      [types.ad]
+    ],
+    "versus": [types.dps]
+  },
+  "3060": {
+    "name": "Banner of Command",
+    "value": 0.1,
+    "users": [
+      [types.none]
+    ],
+    "versus": []
+  },
+  "3065": {
+    "name": "Spirit Visage",
+    "value": 0.8,
+    "users": [
+      [types.tank, types.dive]
+    ],
+    "versus": [types.ap]
+  },
+  "3068": {
+    "name": "Sunfire Cape",
+    "value": 0.9,
+    "users": [
+      [types.tank, types.dive]
+    ],
+    "versus": [types.ad]
+  },
+  "3070": {
+    "name": "Tear of the Goddess",
+    "value": 1,
+    "users": [
+      [types.tear]
+    ],
+    "versus": []
+  },
+  "3071": {
+    "name": "The Black Cleaver",
+    "value": 0.5,
+    "users": [
+      [types.ad]
+    ],
+    "versus": []
+  },
+  "3072": {
+    "name": "The Bloodthirster",
+    "value": 0.4,
+    "users": [
+      [types.ad, types.ranged, types.dps]
+    ],
+    "versus": []
+  },
+  "3074": {
+    "name": "Ravenous Hydra",
+    "value": 0.3,
+    "users": [
+      [types.ad, types.dps, types.melee]
+    ],
+    "versus": []
+  },
+  "3075": {
+    "name": "Thornmail",
+    "value": 0.3,
+    "users": [
+      [types.tank]
+    ],
+    "versus": [types.ad]
+  },
+  "3078": {
+    "name": "Trinity Force",
+    "value": 0.5,
+    "users": [
+      [types.dps, types.melee, types.ad]
+    ],
+    "versus": []
+  },
+  "3083": {
+    "name": "Warmog's Armor",
+    "value": 0.4,
+    "users": [
+      [types.tank]
+    ],
+    "versus": []
+  },
+  "3085": {
+    "name": "Runaan's Hurricane",
+    "value": 0.7,
+    "users": [
+      [types.ad, types.dps, types.ranged]
+    ],
+    "versus": []
+  },
+  "3087": {
+    "name": "Statikk Shiv",
+    "value": 0.5,
+    "users": [
+      [types.ad, types.dps, types.crit]
+    ],
+    "versus": []
+  },
+  "3089": {
+    "name": "Rabadon's Deathcap",
+    "value": 0.5,
+    "users": [
+      [types.ap, types.dps],
+      [types.ap, types.support]
+    ],
+    "versus": []
+  },
+  "3091": {
+    "name": "Wit's End",
+    "value": 0.3,
+    "users": [
+      [types.none]
+    ],
+    "versus": [types.ap]
+  },
+  "3094": {
+    "name": "Rapid Firecannon",
+    "value": 0.5,
+    "users": [
+      [types.ad, types.dps, types.crit, types.ranged]
+    ],
+    "versus": []
+  },
+  "3100": {
+    "name": "Lich Bane",
+    "value": 0.6,
+    "users": [
+      [types.ap, types.aa, types.dps]
+    ],
+    "versus": []
+  },
+  "3102": {
+    "name": "Banshee's Veil",
+    "value": 0.5,
+    "users": [
+      [types.tank, types.dive]
+    ],
+    "versus": [types.ap]
+  },
+  "3107": {
+    "name": "Redemption",
+    "value": 0.8,
+    "users": [
+      [types.support, types.mana],
+      [types.heals, types.support]
+    ],
+    "versus": []
+  },
+  "3109": {
+    "name": "Knight's Vow",
+    "value": 0.3,
+    "users": [
+      [types.support, types.tank]
+    ],
+    "versus": []
+  },
+  "3110": {
+    "name": "Frozen Heart",
+    "value": 0.5,
+    "users": [
+      [types.tank, types.mana, types.dive]
+    ],
+    "versus": [types.ad]
+  },
+  "3115": {
+    "name": "Nashor's Tooth",
+    "value": 0.5,
+    "users": [
+      [types.ap, types.as, types.aa]
+    ],
+    "versus": []
+  },
+  "3116": {
+    "name": "Rylai's Crystal Scepter",
+    "value": 0.5,
+    "users": [
+      [types.poke, types.ap, types.dps]
+    ],
+    "versus": []
+  },
+  "3124": {
+    "name": "Guinsoo's Rageblade",
+    "value": 0.3,
+    "users": [
+      [types.ap, types.dps, types.as, types.aa]
+    ],
+    "versus": []
+  },
+  "3135": {
+    "name": "Void Staff",
+    "value": 0.4,
+    "users": [
+      [types.ap, types.dps]
+    ],
+    "versus": []
+  },
+  "3139": {
+    "name": "Mercurial Scimitar",
+    "value": 0.3,
+    "users": [
+      [types.ad, types.dps, types.ranged]
+    ],
+    "versus": [types.cc, types.ap]
+  },
+  "3142": {
+    "name": "Youmuu's Ghostblade",
+    "value": 0.4,
+    "users": [
+      [types.ad, types.dps, types.dive, types.lethality]
+    ],
+    "versus": []
+  },
+  "3143": {
+    "name": "Randuin's Omen",
+    "value": 0.5,
+    "users": [
+      [types.tank, types.dive]
+    ],
+    "versus": [types.ad, types.crit]
+  },
+  "3146": {
+    "name": "Hextech Gunblade",
+    "value": 0.8,
+    "users": [
+      [types.ad, types.ap]
+    ],
+    "versus": []
+  },
+  "3147": {
+    "name": "Duskblade of Draktharr",
+    "value": 0.5,
+    "users": [
+      [types.ad, types.dps, types.lethality]
+    ],
+    "versus": []
+  },
+  "3151": {
+    "name": "Liandry's Torment",
+    "value": 0.8,
+    "users": [
+      [types.ap, types.poke, types.dps],
+      [types.ap, types.dot]
+    ],
+    "versus": []
+  },
+  "3152": {
+    "name": "Hextech Protobelt-01",
+    "value": 0.5,
+    "users": [
+      [types.ap, types.dive, types.dps]
+    ],
+    "versus": []
+  },
+  "3153": {
+    "name": "Blade of the Ruined King",
+    "value": 0.8,
+    "users": [
+      [types.ad, types.dps, types.ranged]
+    ],
+    "versus": []
+  },
+  "3156": {
+    "name": "Maw of Malmortius",
+    "value": 0.4,
+    "users": [
+      [types.ad]
+    ],
+    "versus": [types.ap]
+  },
+  "3157": {
+    "name": "Zhonya's Hourglass",
+    "value": 0.5,
+    "users": [
+      [types.ap, types.dive, types.dps]
+    ],
+    "versus": [types.ad, types.lethality]
+  },
+  "3165": {
+    "name": "Morellonomicon",
+    "value": 1,
+    "users": [
+      [types.ap, types.dps, types.ranged, types.poke, types.mana],
+      [types.ap, types.support, types.mana]
+    ],
+    "versus": []
+  },
+  "3174": {
+    "name": "Athene's Unholy Grail",
+    "value": 0.6,
+    "users": [
+      [types.ap, types.heals, types.support, types.mana]
+    ],
+    "versus": [types.ap]
+  },
+  "3190": {
+    "name": "Locket of the Iron Solari",
+    "value": 0.8,
+    "users": [
+      [types.support],
+      [types.tank, types.support]
+    ],
+    "versus": []
+  },
+  "3222": {
+    "name": "Mikael's Crucible",
+    "value": 0.2,
+    "users": [
+      [types.heals, types.support, types.mana]
+    ],
+    "versus": []
+  },
+  "3285": {
+    "name": "Luden's Echo",
+    "value": 0.7,
+    "users": [
+      [types.ap, types.poke, types.dps]
+    ],
+    "versus": []
+  },
+  "3504": {
+    "name": "Ardent Censer",
+    "value": 0.5,
+    "users": [
+      [types.heals, types.support, types.ap, types.mana]
+    ],
+    "versus": []
+  },
+  "3508": {
+    "name": "Essence Reaver",
+    "value": 0.5,
+    "users": [
+      [types.mana, types.ad, types.crit, types.ranged, types.dps]
+    ],
+    "versus": []
+  },
+  "3742": {
+    "name": "Dead Man's Plate",
+    "value": 0.4,
+    "users": [
+      [types.tank]
+    ],
+    "versus": [types.ad]
+  },
+  "3748": {
+    "name": "Titanic Hydra",
+    "value": 0.5,
+    "users": [
+      [types.ad, types.tank, types.dive, types.melee, types.dps]
+    ],
+    "versus": []
+  },
+  "3800": {
+    "name": "Righteous Glory",
+    "value": 0.4,
+    "users": [
+      [types.tank, types.mana, types.dive, types.support]
+    ],
+    "versus": []
+  },
+  "3814": {
+    "name": "Edge of Night",
+    "value": 0.4,
+    "users": [
+      [types.ad, types.lethality, types.dps]
+    ],
+    "versus": [types.ap]
+  }
+};
 
 const adc = [3006, 3085, 3031, 3094, 3072, 3033];
-const casterAdc = [3006, 3508, 3087, 3153, 3031, 3033];
-const manaAdc = [3006, 3153, 3085, 3508, 3031, 3033];
-const supportySupport = [3107, 3158, 3504, 3174, 3190, 3089];
-const mageySupportHealer = [3165, 3107, 3174, 3158, 3285, 3089];
-const mageySupport = [3165, 3174, 3020, 3285, 3089, 3135];
-const mage = [3165, 3020, 3158, 3285, 3089, 3135];
-const apTank = [3027, 3047, 3068, 3025, 3001, 3190];
-const manaTank = [2051, 3190, 3047, 3068, 3025, 3102];
 
 Object.defineProperty(exports, 'adc', {
     value: adc
+});
+
+Object.defineProperty(exports, 'finalItems', {
+    value: final
 });

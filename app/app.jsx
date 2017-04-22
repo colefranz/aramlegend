@@ -62,16 +62,15 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="main">
         <form onSubmit={this.handleNewSearch}>
           <label>
-            Summoner Name:
+            Enter Name:
             <input type="text"
               ref={(input) => {this.textInput = input}}
               value={this.state.value}
               onChange={this.summonerNameChange} />
           </label>
-          <input type="submit" value="Submit" />
           {this.displayError()}
         </form>
         <Game game={this.state.activeGame}/>

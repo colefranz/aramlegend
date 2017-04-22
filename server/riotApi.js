@@ -3,7 +3,7 @@
   var key = 'a684fb39-3d45-4c4a-af78-677164fabd9a',
       https = require('https'),
       q = require('Q'),
-      builds = require('./Items'),
+      Items = require('./Items'),
       champData,
       getChampImageUrl,
       itemData,
@@ -19,7 +19,7 @@
   });
 
   (function getItemData() {
-    return getUrl('https://global.api.riotgames.com/api/lol/static-data/NA/v1.2/item?itemListData=image&api_key=' + key);
+    return getUrl('https://global.api.riotgames.com/api/lol/static-data/NA/v1.2/item?itemListData=image,maps&api_key=' + key);
   })().then(function(res) {
     itemData = res.data;
     getItemImageUrl = createImageUrlFunction(itemData);
@@ -34,7 +34,7 @@
             name: champData[participant.championId].name,
             splash: getChampSplashUrl(participant.championId)
           };
-          participant.builds = fillBuildsObject(builds.adc);
+          participant.builds = fillBuildsObject(Items.adc);
         });
 
         return currentGame;
@@ -108,4 +108,19 @@
     }
     fs.writeFile('test.json', JSON.stringify(itemData, null, 4));
   }
+
+  // (function () {
+  //   let fs = require('fs'),
+  //       finalItems = Items.finalItems,
+  //       test= {};
+
+  //   for (let item in finalItems) {
+  //     test[item] = finalItems[item];
+  //     console.log(test[item]);
+  //     test[item].users = [];
+  //     test[item].versus = [];
+  //   }
+  //   console.log(test);
+  //   fs.writeFile('2.json', JSON.stringify(test, null, 2));
+  // })();
 })(exports);

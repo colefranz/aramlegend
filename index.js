@@ -4,7 +4,9 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     path = require('path'),
     riotApi = require('./server/riotApi'),
-    Items = require('./server/Items').get(),
+    Items = require('./server/Items'),
+    finalItems = Items.finals,
+    boots = Items.boots,
     Champs = require('./server/Champions').get(),
 
     app = module.exports.app = exports.app = express(),
@@ -76,26 +78,49 @@ function getTeamComp(team) {
 }
 
 function findBestBuild(player) {
-  var champTypes = player.champ.types,
+  let champTypes = player.champ.types,
       build = [],
+      coreItems = groupGetGoodnessOfFit(champTypes, finalItems, 5),
+      bootItems = groupGetGoodnessOfFit(champTypes, boots, 1);
+
+  coreItems.map(function(item) {
+    item.value = finalItems[item.item].value;
+  });
+  coreItems = orderItemsByValue(coreItems);
+
+  build = bootItems.concat(coreItems);
+
+  player.builds = riotApi.fillBuildsObject(build);
+}
+
+function groupGetGoodnessOfFit(types, options, size) {
+  let group = [],
       smallest = {
         fit: -1,
         index: undefined
       };
 
-  for (let item in Items) {
-    let fit = getGoodnessOfFit(champTypes, Items[item]);
+  for (let option in options) {
+    let fit = getGoodnessOfFit(types, options[option]);
     if (fit > smallest.fit) {
-      if (build.length === 6) {
-        build[smallest.index] = {item: item, fit: fit};
+      if (group.length === size) {
+        group[smallest.index] = {item: option, fit: fit};
       } else {
-        build.push({item: item, fit: fit});
+        group.push({item: option, fit: fit});
       }
-      smallest = findSmallestFit(build);
+      smallest = findSmallestFit(group);
     }
   }
 
-  player.builds = riotApi.fillBuildsObject(build);
+  return group;
+}
+
+function orderItemsByValue(arr) {
+  arr.sort(function(a, b) {
+    return a.value < b.value;
+  });
+
+  return arr;
 }
 
 function findSmallestFit(arr) {
@@ -114,9 +139,16 @@ function findSmallestFit(arr) {
 }
 
 function getGoodnessOfFit(types, item) {
-  var iLength = item.users[0].length,
-      tLength = types.length,
+  let iLength,
+      tLength,
       matches = 0;
+
+  if (item.users.length === 0) {
+    return 1;
+  }
+
+  iLength = item.users[0].length;
+  tLength = types.length;
 
   types.forEach(function(type) {
     if (item.users[0].indexOf(type) !== -1) {

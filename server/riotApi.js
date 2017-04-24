@@ -3,7 +3,7 @@
   var key = 'a684fb39-3d45-4c4a-af78-677164fabd9a',
       https = require('https'),
       q = require('Q'),
-      Items = require('./Items'),
+      finalItems = require('./Items').finals,
       Champions = require('./Champions').get(),
       champData,
       getChampImageUrl,
@@ -110,19 +110,4 @@
     }
     fs.writeFile('test.json', JSON.stringify(data, null, 2));
   }
-
-  // (function () {
-  //   let fs = require('fs'),
-  //       finalItems = Items.finalItems,
-  //       test= {};
-
-  //   for (let item in finalItems) {
-  //     test[item] = finalItems[item];
-  //     console.log(test[item]);
-  //     test[item].users = [];
-  //     test[item].versus = [];
-  //   }
-  //   console.log(test);
-  //   fs.writeFile('2.json', JSON.stringify(test, null, 2));
-  // })();
 })(exports);

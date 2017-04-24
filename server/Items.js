@@ -182,7 +182,7 @@ const boots = {
     "name": "Berserker's Greaves",
     "value": 1,
     "users": [
-      [types.as]
+      [types.as, types.ranged, types.dps]
     ],
     "versus": []
   },
@@ -251,7 +251,8 @@ const final =  {
     "name": "Rod of Ages",
     "value": 0.5,
     "users": [
-      [types.ap, types.tank, types.dive]
+      [types.ap, types.dive, types.dps],
+      [types.ap, types.tank]
     ],
     "versus": [types.dps]
   },
@@ -670,12 +671,5 @@ const final =  {
   }
 };
 
-const adc = [3006, 3085, 3031, 3094, 3072, 3033];
-
-Object.defineProperty(exports, 'adc', {
-    value: adc
-});
-
-exports.get = function() {
-  return final;
-};
+exports.finals = final;
+exports.boots = boots;

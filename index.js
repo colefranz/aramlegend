@@ -55,6 +55,7 @@ function generateBuilds(players) {
     return player.teamId === 200;
   });
 
+  // make a team Model i think
   getTeamComp(blueTeam);
   getTeamComp(redTeam);
 
@@ -80,12 +81,14 @@ function getTeamComp(team) {
 function findBestBuild(player) {
   let champTypes = player.champ.types,
       build = [],
-      coreItems = groupGetGoodnessOfFit(champTypes, finalItems, 5),
-      bootItems = groupGetGoodnessOfFit(champTypes, boots, 1);
+      bootItems = groupGetGoodnessOfFit(champTypes, boots, 1), // get 1 boot
+      coreItems = groupGetGoodnessOfFit(champTypes, finalItems, 5); // get 5 items
 
+  // probably do this better - either set everything here or something else
   coreItems.map(function(item) {
     item.value = finalItems[item.item].value;
   });
+
   coreItems = orderItemsByValue(coreItems);
 
   build = bootItems.concat(coreItems);
@@ -93,7 +96,7 @@ function findBestBuild(player) {
   player.builds = riotApi.fillBuildsObject(build);
 }
 
-function groupGetGoodnessOfFit(types, options, size) {
+function groupGetGoodnessOfFit(types, options, groupSize) {
   let group = [],
       smallest = {
         fit: -1,
@@ -103,7 +106,7 @@ function groupGetGoodnessOfFit(types, options, size) {
   for (let option in options) {
     let fit = getGoodnessOfFit(types, options[option]);
     if (fit > smallest.fit) {
-      if (group.length === size) {
+      if (group.length === groupSize) {
         group[smallest.index] = {item: option, fit: fit};
       } else {
         group.push({item: option, fit: fit});
@@ -115,6 +118,29 @@ function groupGetGoodnessOfFit(types, options, size) {
   return group;
 }
 
+//TODO NEEDS OTHER TEAM DATA
+function getGoodnessOfFit(types, item) {
+  let iLength,
+      tLength,
+      matches = 0;
+
+  if (item.users.length === 0) {
+    return 1;
+  }
+
+  iLength = item.users[0].length;
+  tLength = types.length;
+
+  types.forEach(function(type) {
+    if (item.users[0].indexOf(type) !== -1) {
+      matches++;
+    }
+  });
+
+  return (matches / iLength) + (matches / 10);
+}
+
+//TODO needs better way of handling
 function orderItemsByValue(arr) {
   arr.sort(function(a, b) {
     return a.value < b.value;
@@ -136,27 +162,6 @@ function findSmallestFit(arr) {
     fit: smallest,
     index: index
   };
-}
-
-function getGoodnessOfFit(types, item) {
-  let iLength,
-      tLength,
-      matches = 0;
-
-  if (item.users.length === 0) {
-    return 1;
-  }
-
-  iLength = item.users[0].length;
-  tLength = types.length;
-
-  types.forEach(function(type) {
-    if (item.users[0].indexOf(type) !== -1) {
-      matches++;
-    }
-  });
-
-  return (matches / iLength) + (matches / 10);
 }
 
 

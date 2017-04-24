@@ -4,6 +4,7 @@
       https = require('https'),
       q = require('Q'),
       Items = require('./Items'),
+      Champions = require('./Champions').get(),
       champData,
       getChampImageUrl,
       itemData,
@@ -16,6 +17,7 @@
     champData = res.data;
     getChampImageUrl = createImageUrlFunction(champData);
     version = res.version;
+    writeItemDataToFile();
   });
 
   (function getItemData() {
@@ -32,9 +34,9 @@
           participant.champ = {
             icon: getChampImageUrl(participant.championId),
             name: champData[participant.championId].name,
-            splash: getChampSplashUrl(participant.championId)
+            splash: getChampSplashUrl(participant.championId),
+            types: Champions[participant.championId].types
           };
-          participant.builds = fillBuildsObject(Items.adc);
         });
 
         return currentGame;
@@ -45,13 +47,13 @@
     return getUrl('https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/' + name + '?api_key=' + key);
   };
 
-  function fillBuildsObject(build) {
-    return build.map(function(id) {
-      let item = itemData[id];
+  exports.fillBuildsObject = function(build) {
+    return build.map(function(obj) {
+      let item = itemData[obj.item];
 
       return {
-        id: id,
-        icon: getItemImageUrl(id),
+        id: obj.item,
+        icon: getItemImageUrl(obj.item),
         name: item.name,
         description: item.description
       };
@@ -97,16 +99,16 @@
   }
 
   function writeItemDataToFile() {
-    let fs = require('fs');
+    let fs = require('fs'),
+        data = {};
 
-    for (let item in itemData) {
-      if (itemData[item].maps['12']) {
-        itemData[item] = itemData[item].name;
-      } else {
-        itemData[item] = undefined;
-      }
+    for (let item in champData) {
+        data[item] = {
+          name: champData[item].name,
+          types: []
+        };
     }
-    fs.writeFile('test.json', JSON.stringify(itemData, null, 4));
+    fs.writeFile('test.json', JSON.stringify(data, null, 2));
   }
 
   // (function () {

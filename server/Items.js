@@ -1,3 +1,5 @@
+const types = require('./Constants').types;
+
 const items =  {
   "1001": "Boots of Speed",
   "1004": "Faerie Charm",
@@ -175,28 +177,6 @@ const items =  {
   "3903": "Raise Morale"
 };
 
-const types = {
-  'none': 'none',
-  'ap': 'ap',
-  'ad': 'ad',
-  'heals': 'heals',
-  'ranged': 'ranged',
-  'melee': 'melee',
-  'aa': 'aa',
-  'tank': 'tank',
-  'mana': 'mana',
-  'poke': 'poke',
-  'tear': 'tear',
-  'as': 'as',
-  'dive': 'dive',
-  'dps': 'dps',
-  'crit': 'crit',
-  'support': 'support',
-  'lethality': 'lethality',
-  'dot': 'dot',
-  'cc': 'cc'
-};
-
 const boots = {
   "3006": {
     "name": "Berserker's Greaves",
@@ -238,8 +218,7 @@ const boots = {
     ],
     "versus": []
   },
-
-}
+};
 
 const final =  {
   "3001": {
@@ -390,7 +369,7 @@ const final =  {
   },
   "3078": {
     "name": "Trinity Force",
-    "value": 0.5,
+    "value": 0.8,
     "users": [
       [types.dps, types.melee, types.ad]
     ],
@@ -569,7 +548,7 @@ const final =  {
   },
   "3152": {
     "name": "Hextech Protobelt-01",
-    "value": 0.5,
+    "value": 0.2,
     "users": [
       [types.ap, types.dive, types.dps]
     ],
@@ -697,6 +676,6 @@ Object.defineProperty(exports, 'adc', {
     value: adc
 });
 
-Object.defineProperty(exports, 'finalItems', {
-    value: final
-});
+exports.get = function() {
+  return final;
+};

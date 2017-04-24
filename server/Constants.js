@@ -1,0 +1,22 @@
+const types = exports.types = {
+  'none': 'none',
+  'ap': 'ap',
+  'ad': 'ad',
+  'heals': 'heals',
+  'ranged': 'ranged',
+  'melee': 'melee',
+  'aa': 'aa',
+  'tank': 'tank',
+  'mana': 'mana',
+  'poke': 'poke',
+  'tear': 'tear',
+  'as': 'as',
+  'dive': 'dive',
+  'dps': 'dps',
+  'crit': 'crit',
+  'support': 'support',
+  'lethality': 'lethality',
+  'dot': 'dot',
+  'cc': 'cc',
+  'stacker': 'stacker' // black cleaver
+};

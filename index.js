@@ -55,16 +55,15 @@ function generateBuilds(players) {
     return player.teamId === 200;
   });
 
-  // make a team Model i think
   getTeamComp(blueTeam);
   getTeamComp(redTeam);
 
   blueTeam.players.forEach(function(player) {
-    findBestBuild(player);
+    findBestBuild(player, redTeam.comp);
   });
 
   redTeam.players.forEach(function(player) {
-    findBestBuild(player);
+    findBestBuild(player, blueTeam.comp);
   });
 }
 
@@ -78,11 +77,11 @@ function getTeamComp(team) {
   team.comp = comp;
 }
 
-function findBestBuild(player) {
+function findBestBuild(player, enemyComp) {
   let champTypes = player.champ.types,
       build = [],
-      bootItems = groupGetGoodnessOfFit(champTypes, boots, 1), // get 1 boot
-      coreItems = groupGetGoodnessOfFit(champTypes, finalItems, 5); // get 5 items
+      bootItems = groupGetGoodnessOfFit(champTypes, boots, 1, enemyComp), // get 1 boot
+      coreItems = groupGetGoodnessOfFit(champTypes, finalItems, 5, enemyComp); // get 5 items
 
   // probably do this better - either set everything here or something else
   coreItems.map(function(item) {
@@ -96,33 +95,42 @@ function findBestBuild(player) {
   player.builds = riotApi.fillBuildsObject(build);
 }
 
-function groupGetGoodnessOfFit(types, options, groupSize) {
+function groupGetGoodnessOfFit(types, options, groupSize, enemyComp) {
   let group = [],
+      groupSaturated = false,
       smallest = {
         fit: -1,
         index: undefined
       };
 
   for (let option in options) {
-    let fit = getGoodnessOfFit(types, options[option]);
+    let fit = getGoodnessOfFit(options[option], types, enemyComp);
     if (fit > smallest.fit) {
-      if (group.length === groupSize) {
+      if (groupSaturated) {
         group[smallest.index] = {item: option, fit: fit};
+        smallest = findSmallestFit(group);
       } else {
         group.push({item: option, fit: fit});
+        if (!groupSaturated && group.length === groupSize) {
+          groupSaturated = true;
+          smallest = findSmallestFit(group);
+        }
       }
-      smallest = findSmallestFit(group);
     }
   }
 
   return group;
 }
 
-//TODO NEEDS OTHER TEAM DATA
-function getGoodnessOfFit(types, item) {
+// TODO NEEDS OTHER TEAM DATA
+// TODO need a way to have unique items (tiamats, LWs)
+// TODO make items/champions have a main role and items
+// are set based on that role. Or daamge type.
+function getGoodnessOfFit(item, types, enemyComp) {
   let iLength,
       tLength,
-      matches = 0;
+      matchesUsers = 0,
+      matchesVersus = 0;
 
   if (item.users.length === 0) {
     return 1;
@@ -133,11 +141,19 @@ function getGoodnessOfFit(types, item) {
 
   types.forEach(function(type) {
     if (item.users[0].indexOf(type) !== -1) {
-      matches++;
+      matchesUsers++;
     }
   });
 
-  return (matches / iLength) + (matches / 10);
+  item.versus.forEach(function(type) {
+    enemyComp.forEach(function(enemyType) {
+      if (type === enemyType) {
+        matchesVersus++;
+      }
+    });
+  });
+
+  return (matchesUsers / iLength) + (matchesUsers / 10);
 }
 
 //TODO needs better way of handling

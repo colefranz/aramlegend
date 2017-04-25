@@ -29,7 +29,7 @@ var champs = {
   "5": {
     "name": "Xin Zhao",
     "types": [
-      [types.ad, types.melee, types.tank, types.dive, types.lethality, types.mana],
+      [types.ad, types.melee, types.tank, types.dive, types.lethality, types.dps],
       [types.ad, types.melee, types.dps, types.dive, types.lethality, types.mana]
     ]
   },

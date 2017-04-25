@@ -207,7 +207,7 @@ const boots = {
     "value": 1,
     "users": [],
     "versus": [
-      types.ap, types.cc
+     types.cc
     ]
   },
   "3158": {
@@ -534,7 +534,7 @@ const final =  {
     "name": "Duskblade of Draktharr",
     "value": 0.5,
     "users": [
-      [types.ad, types.dps, types.lethality]
+      [types.ad, types.dps, types.ranged, types.lethality]
     ],
     "versus": []
   },
